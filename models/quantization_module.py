@@ -51,22 +51,25 @@ class FixedPoint_ConvBNFusion(nn.Module):
         self.bn = nn.BatchNorm2d(out_channels, eps=eps, momentum=momentum, affine=affine, track_running_stats=track_running_stats)
 
     def forward(self, x):
-        conv_out = self.conv(x)
-
         if self.training:
+            conv_out = self.conv(x)
             _ = self.bn(conv_out)
             batch_mean = conv_out.mean(dim=(0, 2, 3))
             batch_var = conv_out.var(dim=(0, 2, 3), unbiased=False)
         else:
             batch_mean = self.bn.running_mean
-            batch_var = self.bn.running_var
+            batch_var = self.bn.running_var   
 
         std = torch.sqrt(batch_var + self.bn.eps)
         fused_weight = self.conv.weight * (self.bn.weight / std).reshape(-1, 1, 1, 1)
-        fused_bias = self.bn.bias - batch_mean * self.bn.weight / std
+
+        if self.conv.bias is not None:
+            fused_bias = self.bn.bias + (self.conv.bias - batch_mean) * self.bn.weight / std
+        else:
+            fused_bias = self.bn.bias - batch_mean * self.bn.weight / std
 
         qa = FixedPointQuantize.apply(x)
         qw = FixedPointQuantize.apply(fused_weight)
         qb = FixedPointQuantize.apply(fused_bias)
-        output = F.conv2d(qa, qw, qb, self.stride, self.padding, self.dilation, self.groups)
+        output = F.conv2d(qa, qw, qb, self.conv.stride, self.conv.padding, self.conv.dilation, self.conv.groups)
         return output.clone()

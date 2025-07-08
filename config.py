@@ -38,7 +38,7 @@ save_model = True
 load_model = False
 start_epoch = 0
 
-model_name = 'CQTF_VGG_SMALL'
+model_name = 'CQTF_ResNet9'
 
 batch_size = 128
 epochs = 2000
