@@ -4,7 +4,7 @@ __pycache__/
 *.pth
 *.log
 
-.swp
+*.swp
 
 .ipynb_checkpoints/
 
