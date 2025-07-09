@@ -98,7 +98,7 @@ optimizer = torch.optim.SGD(model.parameters(), learning_rate,
 
 lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, epochs, eta_min=0, last_epoch=-1)
 
-print('Model: {}， Total bits {}, Fractional bits {}'.format(model_name, TB, FB))
+print('Model: {}, Total bits {}, Fractional bits {}'.format(model_name, TB, FB))
 
 for epoch in range(epochs):
 
