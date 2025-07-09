@@ -49,7 +49,7 @@ class CQTF_ResNet9(nn.Module):
         self.layer4 = self._make_layer(BasicBlock, 512, 1, stride=2)
 
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.fc = nn.Linear(512 * BasicBlock.expansion, num_classes)
+        self.fc = CQTF_FixedPoint_Linear(512 * BasicBlock.expansion, num_classes)
 
         self._initialize_weights()
 

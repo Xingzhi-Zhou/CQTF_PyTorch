@@ -4,6 +4,10 @@ __pycache__/
 *.pth
 *.log
 
+*_vs*
+
+*_Q*
+
 *.swp
 
 .ipynb_checkpoints/
